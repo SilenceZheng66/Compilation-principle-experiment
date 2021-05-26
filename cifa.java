@@ -11,35 +11,6 @@ public class cifa {
     public Map<String,String> classMap;
     public Map<String,String> mnemonicCodeMap;
 
-    // 判断是否为常量（整数、小数、浮点数）
-    public static boolean isNum(String str) {
-        int dot = 0; // .的个数
-        int notNum = 0; // 不是数字的个数
-        for (int i = 0; i < str.length(); i++) {
-            if (!(str.charAt(i) >= '0' && str.charAt(i) <= '9')) {
-                notNum++;
-                if (notNum > dot + 1) {
-                    System.out.println("该常量" + str + "的词法不正确");
-                    return false;
-                } else if (str.charAt(i) == '.') {
-                    dot++;
-                    if (dot > 1)
-                    {
-                        System.out.println("该常量" + str + "的词法不正确");
-                        return false;
-                    }
-                } else if ((str.charAt(i-1) >= '0' && str.charAt(i-1) <= '9') && (str.charAt(i) == 'E')
-                        && (i == str.length() - 1 || (str.charAt(i+1) >= '0' && str.charAt(i+1) <= '9'))) {
-                    continue;
-                } else {
-                    System.out.println("该常量" + str + "的词法不正确");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     //科学计数法转换
     public String convertNumber(String numberStr) {
         BigDecimal resultNumber = BigDecimal.valueOf(Double.parseDouble(numberStr));
@@ -53,7 +24,6 @@ public class cifa {
         for (String s:signals_2) {
             if (seg.contains(s)){
                 String[] sep = seg.split(s);
-                System.out.println(Arrays.toString(sep));//test
                 int counter = 0;
                 for (String item:sep) {
                     doAna(item);
@@ -100,58 +70,32 @@ public class cifa {
                     i = seg.length();
                     break;
                 }
-                while (true){
-                    //判断下一位是小数点还是E 分情况
-                    if (ch == '.') {
-                        String[] line = seg.split("\\.");
-                        if (line.length == 2) {
-                            //科学计数
-                            if (line[1].contains("E")) {
-                                line = seg.split("E");
-                                if (line.length == 2) {
-                                    System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(seg) + ")");
-                                    break;
-                                }
-                                //异常处理
-                                else {
-                                }
+                boolean haveDot = false;
+                boolean haveEe = false;
+                int digits_count = 1;
+                boolean doBreak = false;
 
-                            }
-                            //浮点数
-                            else {
-                                System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + seg + ")");
-                                break;
-                            }
-                        }
-                        //异常处理
-                        else {
-                        }
+                //判断后续字符，确定为科学计数法或者浮点数。
+                while (true){
+                    //若下一位为点
+                    if (ch == '.') {
+                        haveDot = true;
                     }
                     else if (ch == 'E' || ch == 'e') {
-                        String[] line = seg.split("E");
-                        if (line.length == 2) {
-                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(seg) + ")");
-                            break;
-                        }
-                        //异常处理
-                        else {
-                        }
+                        haveEe = true;
                     }
-                    else {
-                        while (Character.isDigit(ch)) {//连续读取若干数字
-                            strToken += Character.toString(ch);
-                            //判断该行是否结束
-                            if (++i < seg.length()) {
-                                ch = seg.charAt(i);
-                            } else {
-                                //该行结束的话终止循环进行下一行的分析
-                                i = seg.length();
-                                break;
-                            }
+                    else if (Character.isDigit(ch)){
+                        digits_count++;
+                    }else {
+                        if(haveEe){
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")");
+                        }else if (haveDot){
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")");
+                        }else {
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
                         }
-                        System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                        break;
                     }
-
                     //判断下面是否还有数字或小数点或字母
                     if (++i < seg.length()) {
                         strToken += Character.toString(ch);
@@ -159,12 +103,19 @@ public class cifa {
                     }
                     else {
                         strToken += Character.toString(ch);
-                        System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                        if(haveEe){
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")");
+                        }else if (haveDot){
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")");
+                        }else {
+                            System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                        }
                         i = seg.length();
+                        doBreak = true;
                         break;
                     }
                 }
-
+                if (doBreak) break;
 
             }//运算符和界符的判断
             else if (classMap.containsKey(Character.toString(ch))) {
