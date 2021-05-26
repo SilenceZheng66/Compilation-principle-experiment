@@ -1,2 +1,2 @@
-if i>=0 i=i+5
-if myid>=8 myid=myid+5.5-10
+if (i>=0) {i=i+5;}
+else {myid=myid+5.5e3-10;}

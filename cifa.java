@@ -176,6 +176,11 @@ public class cifa {
         classMap.put("-","18");
         classMap.put("*","19");
         classMap.put("/","20");
+        classMap.put("(","21");
+        classMap.put(")","22");
+        classMap.put("{","23");
+        classMap.put("}","24");
+        classMap.put(";","25");
 
         mnemonicCodeMap = new HashMap<String,String>();
         mnemonicCodeMap.put("1","BEGIN");
@@ -198,11 +203,16 @@ public class cifa {
         mnemonicCodeMap.put("18","MI");
         mnemonicCodeMap.put("19","MU");
         mnemonicCodeMap.put("20","DI");
+        mnemonicCodeMap.put("21","OP");// Opening and closing parentheses
+        mnemonicCodeMap.put("22","CP");
+        mnemonicCodeMap.put("23","OB");// Opening and closing braces
+        mnemonicCodeMap.put("24","CB");
+        mnemonicCodeMap.put("25","SC");// Semicolon
 
     }
 
     public static void main(String[] args) throws Exception {
-        int i =0,j=0;
+        int i=0,j=0;
         String strToken ="";//存储从strTest分离出来的关键字、标识符、常数、运算符、界符
         String strTest ="";//存储从文件里面读来的一行代码
         char ch ;//用来存储从strTest中分离出来的单个字符

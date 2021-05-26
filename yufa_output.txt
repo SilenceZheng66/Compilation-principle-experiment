@@ -1,0 +1,72 @@
+第1步：    当前栈：$ S'              待读队列：if ( id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：S' --> SS'
+第2步：    当前栈：$ S' S              待读队列：if ( id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：S --> if(X){S}Q
+第3步：    当前栈：$ S' Q } S { ) X ( if              待读队列：if ( id >= int ) { id = id + int ; } else { id = id + real - int ; } $ 
+第4步：    当前栈：$ S' Q } S { ) X (              待读队列：( id >= int ) { id = id + int ; } else { id = id + real - int ; } $ 
+第5步：    当前栈：$ S' Q } S { ) X              待读队列：id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：X --> ERE
+第6步：    当前栈：$ S' Q } S { ) E R E              待读队列：id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：E --> TE'
+第7步：    当前栈：$ S' Q } S { ) E R E' T              待读队列：id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：T --> FT'
+第8步：    当前栈：$ S' Q } S { ) E R E' T' F              待读队列：id >= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：F --> id
+第9步：    当前栈：$ S' Q } S { ) E R E' T' id              待读队列：id >= int ) { id = id + int ; } else { id = id + real - int ; } $ 
+第10步：    当前栈：$ S' Q } S { ) E R E' T'              待读队列：>= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：T' --> ε
+第11步：    当前栈：$ S' Q } S { ) E R E'              待读队列：>= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：E' --> ε
+第12步：    当前栈：$ S' Q } S { ) E R              待读队列：>= int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：R --> >=
+第13步：    当前栈：$ S' Q } S { ) E >=              待读队列：>= int ) { id = id + int ; } else { id = id + real - int ; } $ 
+第14步：    当前栈：$ S' Q } S { ) E              待读队列：int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：E --> TE'
+第15步：    当前栈：$ S' Q } S { ) E' T              待读队列：int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：T --> FT'
+第16步：    当前栈：$ S' Q } S { ) E' T' F              待读队列：int ) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：F --> int
+第17步：    当前栈：$ S' Q } S { ) E' T' int              待读队列：int ) { id = id + int ; } else { id = id + real - int ; } $ 
+第18步：    当前栈：$ S' Q } S { ) E' T'              待读队列：) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：T' --> ε
+第19步：    当前栈：$ S' Q } S { ) E'              待读队列：) { id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：E' --> ε
+第20步：    当前栈：$ S' Q } S { )              待读队列：) { id = id + int ; } else { id = id + real - int ; } $ 
+第21步：    当前栈：$ S' Q } S {              待读队列：{ id = id + int ; } else { id = id + real - int ; } $ 
+第22步：    当前栈：$ S' Q } S              待读队列：id = id + int ; } else { id = id + real - int ; } $          下一步所用产生式：S --> id B
+第23步：    当前栈：$ S' Q } B id              待读队列：id = id + int ; } else { id = id + real - int ; } $ 
+第24步：    当前栈：$ S' Q } B              待读队列：= id + int ; } else { id = id + real - int ; } $          下一步所用产生式：B --> =E;
+第25步：    当前栈：$ S' Q } ; E =              待读队列：= id + int ; } else { id = id + real - int ; } $ 
+第26步：    当前栈：$ S' Q } ; E              待读队列：id + int ; } else { id = id + real - int ; } $          下一步所用产生式：E --> TE'
+第27步：    当前栈：$ S' Q } ; E' T              待读队列：id + int ; } else { id = id + real - int ; } $          下一步所用产生式：T --> FT'
+第28步：    当前栈：$ S' Q } ; E' T' F              待读队列：id + int ; } else { id = id + real - int ; } $          下一步所用产生式：F --> id
+第29步：    当前栈：$ S' Q } ; E' T' id              待读队列：id + int ; } else { id = id + real - int ; } $ 
+第30步：    当前栈：$ S' Q } ; E' T'              待读队列：+ int ; } else { id = id + real - int ; } $          下一步所用产生式：T' --> ε
+第31步：    当前栈：$ S' Q } ; E'              待读队列：+ int ; } else { id = id + real - int ; } $          下一步所用产生式：E' --> ME'
+第32步：    当前栈：$ S' Q } ; E' M              待读队列：+ int ; } else { id = id + real - int ; } $          下一步所用产生式：M --> +T
+第33步：    当前栈：$ S' Q } ; E' T +              待读队列：+ int ; } else { id = id + real - int ; } $ 
+第34步：    当前栈：$ S' Q } ; E' T              待读队列：int ; } else { id = id + real - int ; } $          下一步所用产生式：T --> FT'
+第35步：    当前栈：$ S' Q } ; E' T' F              待读队列：int ; } else { id = id + real - int ; } $          下一步所用产生式：F --> int
+第36步：    当前栈：$ S' Q } ; E' T' int              待读队列：int ; } else { id = id + real - int ; } $ 
+第37步：    当前栈：$ S' Q } ; E' T'              待读队列：; } else { id = id + real - int ; } $          下一步所用产生式：T' --> ε
+第38步：    当前栈：$ S' Q } ; E'              待读队列：; } else { id = id + real - int ; } $          下一步所用产生式：E' --> ε
+第39步：    当前栈：$ S' Q } ;              待读队列：; } else { id = id + real - int ; } $ 
+第40步：    当前栈：$ S' Q }              待读队列：} else { id = id + real - int ; } $ 
+第41步：    当前栈：$ S' Q              待读队列：else { id = id + real - int ; } $          下一步所用产生式：Q --> else{S}
+第42步：    当前栈：$ S' } S { else              待读队列：else { id = id + real - int ; } $ 
+第43步：    当前栈：$ S' } S {              待读队列：{ id = id + real - int ; } $ 
+第44步：    当前栈：$ S' } S              待读队列：id = id + real - int ; } $          下一步所用产生式：S --> id B
+第45步：    当前栈：$ S' } B id              待读队列：id = id + real - int ; } $ 
+第46步：    当前栈：$ S' } B              待读队列：= id + real - int ; } $          下一步所用产生式：B --> =E;
+第47步：    当前栈：$ S' } ; E =              待读队列：= id + real - int ; } $ 
+第48步：    当前栈：$ S' } ; E              待读队列：id + real - int ; } $          下一步所用产生式：E --> TE'
+第49步：    当前栈：$ S' } ; E' T              待读队列：id + real - int ; } $          下一步所用产生式：T --> FT'
+第50步：    当前栈：$ S' } ; E' T' F              待读队列：id + real - int ; } $          下一步所用产生式：F --> id
+第51步：    当前栈：$ S' } ; E' T' id              待读队列：id + real - int ; } $ 
+第52步：    当前栈：$ S' } ; E' T'              待读队列：+ real - int ; } $          下一步所用产生式：T' --> ε
+第53步：    当前栈：$ S' } ; E'              待读队列：+ real - int ; } $          下一步所用产生式：E' --> ME'
+第54步：    当前栈：$ S' } ; E' M              待读队列：+ real - int ; } $          下一步所用产生式：M --> +T
+第55步：    当前栈：$ S' } ; E' T +              待读队列：+ real - int ; } $ 
+第56步：    当前栈：$ S' } ; E' T              待读队列：real - int ; } $          下一步所用产生式：T --> FT'
+第57步：    当前栈：$ S' } ; E' T' F              待读队列：real - int ; } $          下一步所用产生式：F --> real
+第58步：    当前栈：$ S' } ; E' T' real              待读队列：real - int ; } $ 
+第59步：    当前栈：$ S' } ; E' T'              待读队列：- int ; } $          下一步所用产生式：T' --> ε
+第60步：    当前栈：$ S' } ; E'              待读队列：- int ; } $          下一步所用产生式：E' --> ME'
+第61步：    当前栈：$ S' } ; E' M              待读队列：- int ; } $          下一步所用产生式：M --> -T
+第62步：    当前栈：$ S' } ; E' T -              待读队列：- int ; } $ 
+第63步：    当前栈：$ S' } ; E' T              待读队列：int ; } $          下一步所用产生式：T --> FT'
+第64步：    当前栈：$ S' } ; E' T' F              待读队列：int ; } $          下一步所用产生式：F --> int
+第65步：    当前栈：$ S' } ; E' T' int              待读队列：int ; } $ 
+第66步：    当前栈：$ S' } ; E' T'              待读队列：; } $          下一步所用产生式：T' --> ε
+第67步：    当前栈：$ S' } ; E'              待读队列：; } $          下一步所用产生式：E' --> ε
+第68步：    当前栈：$ S' } ;              待读队列：; } $ 
+第69步：    当前栈：$ S' }              待读队列：} $ 
+第70步：    当前栈：$ S'              待读队列：$          下一步所用产生式：S' --> ε
+第71步：    当前栈：$              待读队列：$ 
+Accept
