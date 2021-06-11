@@ -12,6 +12,93 @@ public class yufa {
     private static HashMap<String, Integer> map_s2i; // 种别码Map，单词为键，种别码为值
     private static HashMap<String, Integer> mnemonicCodeMap; //种别码Map，单词为键，种别码为值，用于转化词法分析的结果。
 
+    public static boolean gramAnalyse(){
+        int stackTop = 1;
+        int readerTop = 0;
+        int index = 0; // 当前步骤数
+        initMap(); // 初始化种别码Map
+        initProductions(); // 产生式初始化
+        stack.add(0, String.valueOf(map_s2i.get("$"))); // 在stack底部加上$
+        stack.add(stackTop, "S'"); // 将S'压入栈
+        String filepath = "cifaOutput.txt";
+        StringBuffer outputBuffer = new StringBuffer(); // 输出到文件的StringBuffer
+
+        // 通过词法分析器的输出结果，初始化reader
+        try {
+            readToReader(filepath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        reader.add(map_s2i.get("$")); // 在reader末尾加上$
+        while (stackTop >= 0) {
+            System.out.printf("%-6s", "第" + ++index + "步：");
+            System.out.printf("%-10s", "当前栈：");
+            outputBuffer.append("第" + index + "步：    当前栈：");
+            StringBuffer sb = new StringBuffer(); // 引入StringBuffer仅为控制在控制台的输出格式对齐
+            for (int i = 0; i <= stackTop; i++) {
+                String str = null;
+                try {
+                    str = map_i2s.get(Integer.valueOf(stack.get(i)));
+                    if (str != null) {
+                        sb.append(str + " ");
+                        outputBuffer.append(str + " ");
+                    }
+                } catch (NumberFormatException e) {
+                    sb.append(stack.get(i) + " ");
+                    outputBuffer.append(stack.get(i) + " ");
+                }
+            }
+            System.out.printf("%-30s", sb.toString());
+            System.out.print("待读队列：");
+            outputBuffer.append("             待读队列：");
+            sb = new StringBuffer();
+            for (int i = 0; i < reader.size(); i++) {
+                sb.append(map_i2s.get(reader.get(i)) + " ");
+                outputBuffer.append(map_i2s.get(reader.get(i)) + " ");
+            }
+            System.out.printf("%-55s", sb.toString());
+
+            if (match(stackTop, readerTop)) {
+                stackTop--;
+                System.out.print("\n");
+                outputBuffer.append("\n");
+            } else {
+                int i = ll1_table(stackTop, readerTop);
+                System.out.println("stacktop="+stackTop+"|i="+i+"|stacktopItem="+stack.get(stackTop)+"|readertopItem="+reader.get(readerTop));
+                stackTop += stackPush(stackTop, productions[i]); // 压栈
+                System.out.printf("%-30s", "下一步所用产生式：" + productions[i].prod);
+                System.out.println();
+                outputBuffer.append("         下一步所用产生式：" + productions[i].prod + "\n");
+            }
+        }
+        if (stackTop == -1) {
+            System.out.println("语法分析成功");
+            outputBuffer.append("Accept");
+        }
+
+        System.out.print("语法分析结果文件的保存路径：yufaOutput.txt");
+        String outputPath = "yufaOutput.txt";
+        // 将StringBuffer的内容输出到文件
+        File outputFile = new File(outputPath);
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+        PrintWriter writer = null;
+        try {
+            outputFile.createNewFile();
+            writer = new PrintWriter(new FileOutputStream(outputFile));
+            writer.write(outputBuffer.toString());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         int stackTop = 1;
         int readerTop = 0;
@@ -131,24 +218,12 @@ public class yufa {
     // 利用LL(1)预测分析表进行分析
     private static int ll1_table(int stackTop, int readerTop) {
         if ("S".equals(stack.get(stackTop))) {
-            if ("char".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 0;
-            } else if ("short".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 0;
-            } else if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 0;
-            } else if ("long".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 0;
-            } else if ("float".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 0;
-            } else if ("double".equals(map_i2s.get(reader.get(readerTop)))) {
+            if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 0;
             } else if ("id".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 1;
             } else if ("if".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 2;
-            } else if ("while".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 3;
             } else if ("}".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 4;
             } else if ("$".equals(map_i2s.get(reader.get(readerTop)))) {
@@ -347,23 +422,11 @@ public class yufa {
             }
         }
         else if ("S'".equals(stack.get(stackTop))) {
-            if ("char".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("short".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("long".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("float".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("double".equals(map_i2s.get(reader.get(readerTop)))) {
+            if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 34;
             } else if ("id".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 34;
             } else if ("if".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 34;
-            } else if ("while".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 34;
             } else if ("$".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 35;
@@ -372,19 +435,10 @@ public class yufa {
             }
         }
         else if ("A".equals(stack.get(stackTop))) {
-            if ("char".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 36;
-            } else if ("short".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 37;
-            } else if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
+            if ("int".equals(map_i2s.get(reader.get(readerTop)))) {
                 return 38;
-            } else if ("long".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 39;
-            } else if ("float".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 40;
-            } else if ("double".equals(map_i2s.get(reader.get(readerTop)))) {
-                return 41;
-            } else {
+            }
+            else {
                 return -1;
             }
         }
@@ -396,7 +450,7 @@ public class yufa {
 
     private static boolean match(int stackTop, int readerTop) {
         try {
-            int stackTopVal = Integer.valueOf(stack.get(stackTop)); // 未抛出异常说明是终结符
+            int stackTopVal = Integer.parseInt(stack.get(stackTop)); // 未抛出异常说明是终结符
             if (stackTopVal == reader.get(0)) {
                 stack.remove(stackTop);
                 reader.remove(readerTop);
@@ -410,6 +464,7 @@ public class yufa {
         }
     }
 
+    // S’:程序，S:语句，Q:else语句，L:标识符表，E:表达式，X:条件表达式，R:比较运算符，id:标识符，int:常量, real:实型常量
     private static void initProductions() {
         productions[0] = new Production("S",
                 new String[]{"A", "L", String.valueOf(map_s2i.get(";"))},
@@ -420,9 +475,6 @@ public class yufa {
         productions[2] = new Production("S",
                 new String[]{String.valueOf(map_s2i.get("if")), String.valueOf(map_s2i.get("(")), "X", String.valueOf(map_s2i.get(")")), String.valueOf(map_s2i.get("{")), "S", String.valueOf(map_s2i.get("}")), "Q"},
                 "S --> if(X){S}Q");
-        productions[3] = new Production("S",
-                new String[]{String.valueOf(map_s2i.get("while")), String.valueOf(map_s2i.get("(")), "X", String.valueOf(map_s2i.get(")")), String.valueOf(map_s2i.get("{")), "S", String.valueOf(map_s2i.get("}"))},
-                "S --> while(X){S}");
         productions[4] = new Production("S",
                 new String[]{"ε"},
                 "S --> ε");
@@ -519,24 +571,9 @@ public class yufa {
         productions[35] = new Production("S'",
                 new String[]{"ε"},
                 "S' --> ε");
-        productions[36] = new Production("A",
-                new String[]{String.valueOf(map_s2i.get("char"))},
-                "A --> char");
-        productions[37] = new Production("A",
-                new String[]{String.valueOf(map_s2i.get("short"))},
-                "A --> short");
         productions[38] = new Production("A",
                 new String[]{String.valueOf(map_s2i.get("int"))},
                 "A --> int");
-        productions[39] = new Production("A",
-                new String[]{String.valueOf(map_s2i.get("long"))},
-                "A --> long");
-        productions[40] = new Production("A'",
-                new String[]{String.valueOf(map_s2i.get("float"))},
-                "A --> float");
-        productions[41] = new Production("A",
-                new String[]{String.valueOf(map_s2i.get("double"))},
-                "A --> double");
         productions[42] = new Production("F",
                 new String[]{String.valueOf(map_s2i.get("real"))},
                 "F --> real");

@@ -9,7 +9,7 @@
 (EQ, )
 (ID,i)
 (PL, )
-(INT,5)
+(REAL,23.5)
 (SC, )
 (CB, )
 (ELSE,else)

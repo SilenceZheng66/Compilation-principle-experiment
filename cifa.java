@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -19,17 +17,18 @@ public class cifa {
     }
 
     //字符串分辨
-    public boolean doAna(String seg){
+    public boolean doAna(String seg, BufferedWriter bufferedWriter) throws IOException {
 
         for (String s:signals_2) {
             if (seg.contains(s)){
                 String[] sep = seg.split(s);
                 int counter = 0;
                 for (String item:sep) {
-                    doAna(item);
+                    doAna(item,bufferedWriter);
                     counter++;
                     if (counter==1){
                         System.out.println("(" + mnemonicCodeMap.get(classMap.get(s)) + ", )");
+                        bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get(s)) + ", )\n");
                     }
                 }
                 return true;
@@ -56,6 +55,7 @@ public class cifa {
                     }
                 }
                 System.out.println("(" + mnemonicCodeMap.get(classMap.get("标识符")) + "," + strToken + ")");
+                bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("标识符")) + "," + strToken + ")\n");
             }
             //常数的判断
             else if (Character.isDigit(ch)) {//判断该字符是否为数字
@@ -67,6 +67,7 @@ public class cifa {
                 else {
                     strToken += Character.toString(ch);
                     System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                    bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")\n");
                     i = seg.length();
                     break;
                 }
@@ -89,10 +90,13 @@ public class cifa {
                     }else {
                         if(haveEe){
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")\n");
                         }else if (haveDot){
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")\n");
                         }else {
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")\n");
                         }
                         break;
                     }
@@ -105,10 +109,13 @@ public class cifa {
                         strToken += Character.toString(ch);
                         if(haveEe){
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + convertNumber(strToken) + ")\n");
                         }else if (haveDot){
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("实型常数")) + "," + strToken + ")\n");
                         }else {
                             System.out.println("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")");
+                            bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get("整型常数")) + "," + strToken + ")\n");
                         }
                         i = seg.length();
                         doBreak = true;
@@ -121,6 +128,7 @@ public class cifa {
             else if (classMap.containsKey(Character.toString(ch))) {
                 strToken = Character.toString(ch);
                 System.out.println("(" + mnemonicCodeMap.get(classMap.get(strToken)) + ", )");
+                bufferedWriter.write("(" + mnemonicCodeMap.get(classMap.get(strToken)) + ", )\n");
                 strToken = "";
                 ch = ' ';
                 //判断该行是否结束
@@ -135,6 +143,7 @@ public class cifa {
             //不合法输入
             else {
                 System.out.println("(" + "不合法符号" + ", " + ch + ")");
+                bufferedWriter.write("(" + "不合法符号" + ", " + ch + ")\n");
                 strToken = "";
                 ch = ' ';
                 //判断该行是否结束
@@ -211,12 +220,44 @@ public class cifa {
 
     }
 
+    public static boolean lexAnalyse() throws IOException {
+        int i=0,j=0;
+        String strToken ="";//存储从strTest分离出来的关键字、标识符、常数、运算符、界符
+        String strTest ="";//存储从文件里面读来的一行代码
+        char ch ;//用来存储从strTest中分离出来的单个字符
+        cifa lexicalAnalyse = new cifa();
+        File file = new File("input.txt");//创建要访问的文件
+        File outputFile = new File("cifaOutput.txt");
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+        while ((strTest = bufferedReader.readLine()) != null)//读取文件的一行
+        {
+            System.out.println("第"+(++j)+"行分析结果：");
+            strToken="";
+            ch=' ';
+            String[] l = strTest.split(" ");
+            //标识符和关键字的判断
+            for (String seg:l){
+                if (lexicalAnalyse.classMap.containsKey(seg)){
+                    System.out.println("("+lexicalAnalyse.mnemonicCodeMap.get(lexicalAnalyse.classMap.get(seg))+","+seg+")");
+                    bufferedWriter.write("("+lexicalAnalyse.mnemonicCodeMap.get(lexicalAnalyse.classMap.get(seg))+","+seg+")\n");
+                }else {
+                    lexicalAnalyse.doAna(seg,bufferedWriter);
+                }
+            }
+        }
+        //关闭文件读取
+        bufferedReader.close();
+        bufferedWriter.close();
+        return true;
+    }
+
     public static void main(String[] args) throws Exception {
         int i=0,j=0;
         String strToken ="";//存储从strTest分离出来的关键字、标识符、常数、运算符、界符
         String strTest ="";//存储从文件里面读来的一行代码
         char ch ;//用来存储从strTest中分离出来的单个字符
-        cifa worldAnalyse = new cifa();
+        cifa wordAnalyse = new cifa();
         File file = new File("input.txt");//创建要访问的文件
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         while ((strTest = bufferedReader.readLine()) != null)//读取文件的一行
@@ -227,10 +268,10 @@ public class cifa {
             String[] l = strTest.split(" ");
             //标识符和关键字的判断
             for (String seg:l){
-                if (worldAnalyse.classMap.containsKey(seg)){
-                    System.out.println("("+worldAnalyse.mnemonicCodeMap.get(worldAnalyse.classMap.get(seg))+","+seg+")");
+                if (wordAnalyse.classMap.containsKey(seg)){
+                    System.out.println("("+wordAnalyse.mnemonicCodeMap.get(wordAnalyse.classMap.get(seg))+","+seg+")");
                 }else {
-                    worldAnalyse.doAna(seg);
+                    // wordAnalyse.doAna(seg);
                 }
             }
         }
