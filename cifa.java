@@ -253,29 +253,6 @@ public class cifa {
     }
 
     public static void main(String[] args) throws Exception {
-        int i=0,j=0;
-        String strToken ="";//存储从strTest分离出来的关键字、标识符、常数、运算符、界符
-        String strTest ="";//存储从文件里面读来的一行代码
-        char ch ;//用来存储从strTest中分离出来的单个字符
-        cifa wordAnalyse = new cifa();
-        File file = new File("input.txt");//创建要访问的文件
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        while ((strTest = bufferedReader.readLine()) != null)//读取文件的一行
-        {
-            System.out.println("第"+(++j)+"行分析结果：");
-            strToken="";
-            ch=' ';
-            String[] l = strTest.split(" ");
-            //标识符和关键字的判断
-            for (String seg:l){
-                if (wordAnalyse.classMap.containsKey(seg)){
-                    System.out.println("("+wordAnalyse.mnemonicCodeMap.get(wordAnalyse.classMap.get(seg))+","+seg+")");
-                }else {
-                    // wordAnalyse.doAna(seg);
-                }
-            }
-        }
-        //关闭文件读取
-        bufferedReader.close();
+        lexAnalyse();
     }
 }

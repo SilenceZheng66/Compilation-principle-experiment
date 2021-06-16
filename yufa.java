@@ -99,94 +99,6 @@ public class yufa {
         return true;
     }
 
-    public static void main(String[] args) {
-        int stackTop = 1;
-        int readerTop = 0;
-        int index = 0; // 当前步骤数
-        initMap(); // 初始化种别码Map
-        initProductions(); // 产生式初始化
-        stack.add(0, String.valueOf(map_s2i.get("$"))); // 在stack底部加上$
-        stack.add(stackTop, "S'"); // 将S'压入栈
-        System.out.print("请输入词法分析结果的文件路径：");
-        Scanner scanner = new Scanner(System.in);
-        String filepath = scanner.next();
-        StringBuffer outputBuffer = new StringBuffer(); // 输出到文件的StringBuffer
-
-        // 通过词法分析器的输出结果，初始化reader
-        try {
-            readToReader(filepath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        reader.add(map_s2i.get("$")); // 在reader末尾加上$
-        while (stackTop >= 0) {
-            System.out.printf("%-6s", "第" + ++index + "步：");
-            System.out.printf("%-10s", "当前栈：");
-            outputBuffer.append("第" + index + "步：    当前栈：");
-            StringBuffer sb = new StringBuffer(); // 引入StringBuffer仅为控制在控制台的输出格式对齐
-            for (int i = 0; i <= stackTop; i++) {
-                String str = null;
-                try {
-                    str = map_i2s.get(Integer.valueOf(stack.get(i)));
-                    if (str != null) {
-                        sb.append(str + " ");
-                        outputBuffer.append(str + " ");
-                    }
-                } catch (NumberFormatException e) {
-                    sb.append(stack.get(i) + " ");
-                    outputBuffer.append(stack.get(i) + " ");
-                }
-            }
-            System.out.printf("%-30s", sb.toString());
-            System.out.print("待读队列：");
-            outputBuffer.append("             待读队列：");
-            sb = new StringBuffer();
-            for (int i = 0; i < reader.size(); i++) {
-                sb.append(map_i2s.get(reader.get(i)) + " ");
-                outputBuffer.append(map_i2s.get(reader.get(i)) + " ");
-            }
-            System.out.printf("%-55s", sb.toString());
-
-            if (match(stackTop, readerTop)) {
-                stackTop--;
-                System.out.print("\n");
-                outputBuffer.append("\n");
-            } else {
-                int i = ll1_table(stackTop, readerTop);
-                System.out.println("stacktop="+stackTop+"|i="+i+"|stacktopItem="+stack.get(stackTop)+"|readertopItem="+reader.get(readerTop));
-                stackTop += stackPush(stackTop, productions[i]); // 压栈
-                System.out.printf("%-30s", "下一步所用产生式：" + productions[i].prod);
-                System.out.println();
-                outputBuffer.append("         下一步所用产生式：" + productions[i].prod + "\n");
-            }
-        }
-        if (stackTop == -1) {
-            System.out.println("语法分析成功");
-            outputBuffer.append("Accept");
-        }
-
-        System.out.print("请输入语法分析结果文件的保存路径：");
-        String outputPath = scanner.next();
-        // 将StringBuffer的内容输出到文件
-        File outputFile = new File(outputPath);
-        if (outputFile.exists()) {
-            outputFile.delete();
-        }
-        PrintWriter writer = null;
-        try {
-            outputFile.createNewFile();
-            writer = new PrintWriter(new FileOutputStream(outputFile));
-            writer.write(outputBuffer.toString());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
-        }
-    }
-
     public static void readToReader(String filePath) throws IOException {
         InputStream is = new FileInputStream(filePath);
         String line; // 用来保存每行读取的内容
@@ -676,5 +588,9 @@ public class yufa {
             this.r_str = r_str;
             this.prod = prod;
         }
+    }
+
+    public static void main(String[] args) {
+        gramAnalyse();
     }
 }
