@@ -1,10 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class yufa {
-
     private static ArrayList<String> stack = new ArrayList<>(); // 当前栈
     private static ArrayList<Integer> reader = new ArrayList<>(); // 待读队列
     private static Production[] productions = new Production[43]; // 产生式数组
@@ -65,7 +63,7 @@ public class yufa {
                 outputBuffer.append("\n");
             } else {
                 int i = ll1_table(stackTop, readerTop);
-                System.out.println("stacktop="+stackTop+"|i="+i+"|stacktopItem="+stack.get(stackTop)+"|readertopItem="+reader.get(readerTop));
+                //System.out.println("stacktop="+stackTop+"|i="+i+"|stacktopItem="+stack.get(stackTop)+"|readertopItem="+reader.get(readerTop));
                 stackTop += stackPush(stackTop, productions[i]); // 压栈
                 System.out.printf("%-30s", "下一步所用产生式：" + productions[i].prod);
                 System.out.println();

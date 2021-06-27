@@ -125,6 +125,7 @@ public class yuyi {
     }
 
     private String e(){// PE程序
+        //System.out.println("e");
         String ret1 = this.t();
         String[] temp = this.e1();
         String ret2 = temp[0], ret3 = temp[1];
@@ -139,6 +140,7 @@ public class yuyi {
     }
 
     private String[] e1(){ //PE1程序
+        //System.out.println("e1");
         if (stack.get(this.i).equals("+")){
             this.i++;
             String ret1 = this.t();
@@ -173,6 +175,7 @@ public class yuyi {
     }
 
     private String t(){//  PT程序
+        //System.out.println("t");
         String ret1 = this.f();
         String[] temp = this.t1();
         String ret2 = temp[0], ret3 = temp[1];
@@ -187,6 +190,7 @@ public class yuyi {
     }
 
     private String[] t1(){// PT1程序
+        //System.out.println("t1");
         if (stack.get(this.i).equals("*")){
             this.i++;
             String ret1 = this.f();
@@ -221,6 +225,7 @@ public class yuyi {
     }
 
     private String f(){// PF程序
+        //System.out.println("f");
         if (stack.get(this.i).equals("(")){
             this.i++;
             String ret1 = this.e();
@@ -248,6 +253,7 @@ public class yuyi {
         String filepath = "cifaOutput.txt";
         readToReader(filepath);
         stack.add("#");
+        System.out.println(stack);
         //start analyze
         this.m();
         for (siyuanshi s:results) {
